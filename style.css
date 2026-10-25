@@ -54,9 +54,10 @@ body {
 
 #start-screen.screen.active {
     flex: 1;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    padding: 20px 0;
+    padding-top: 40px;
+    padding-bottom: 20px;
 }
 
 @keyframes fadeIn {
