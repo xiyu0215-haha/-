@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>你有「餅」嗎？—— 送禮沒有那麼「南」！</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="app">
+    <div id="start-screen" class="screen active">
+        <div class="header-title">
+            <h1>你有「餅」嗎？</h1>
+            <p>送禮沒有那麼「南」！</p>
+        </div>
+        
+        <div class="hero-img">
+            <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="55" r="35" fill="#F6D55C" stroke="#5C3D2E" stroke-width="4"/>
+                <circle cx="50" cy="55" r="28" fill="#FFF" stroke="#5C3D2E" stroke-width="2" stroke-dasharray="4,4"/>
+                <circle cx="40" cy="50" r="4" fill="#5C3D2E"/>
+                <circle cx="60" cy="50" r="4" fill="#5C3D2E"/>
+                <path d="M 42 62 Q 50 70 58 62" stroke="#5C3D2E" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <ellipse cx="32" cy="55" rx="4" ry="2" fill="#E65C40" opacity="0.6"/>
+                <ellipse cx="68" cy="55" rx="4" ry="2" fill="#E65C40" opacity="0.6"/>
+            </svg>
+        </div>
+
+        <p style="text-align: center; margin-bottom: 20px; font-weight: 700; line-height: 1.6; font-size: 0.95rem;">
+            測測你的「生活靈魂」與 MBTI 性格風格！<br>
+            解鎖你生活中的真實模樣與命定糕餅！
+        </p>
+
+        <button class="btn" onclick="startQuiz()">開始測驗 🥮</button>
+    </div>
+
+    <div id="quiz-screen" class="screen">
+        <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill"></div>
+        </div>
+
+        <div class="question-card">
+            <div id="question-num" class="question-num">QUESTION 01</div>
+            <div id="question-text" class="question-text">題目載入中...</div>
+        </div>
+
+        <div id="options-container" class="options-container"></div>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <div id="result-card-capture" class="result-card">
+            <div class="result-header">
+                <span id="res-mbti" class="mbti-badge">MBTI</span>
+                <div id="res-title" class="pastry-title">糕餅名稱</div>
+                <div id="res-tagline" class="pastry-tagline">核心標籤</div>
+            </div>
+
+            <div class="result-img" id="res-svg"></div>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <div class="title">生活講究指數</div>
+                    <div id="res-perfection" class="value">90%</div>
+                </div>
+                <div class="info-box">
+                    <div class="title">生活幸運物</div>
+                    <div id="res-item" class="value">幸運物</div>
+                </div>
+            </div>
+
+            <div class="desc-box">
+                <strong>📌 生活中的你是：</strong><br>
+                <span id="res-desc">形容文案...</span>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="radarChart"></canvas>
+            </div>
+
+            <div class="friends-container">
+                <div class="friends-header-title">❤️ 生活中最速配的糕餅夥伴</div>
+                <div class="good-friends-grid">
+                    <div class="friend-card-item">
+                        <div id="res-good-1-name" class="friend-card-name">--</div>
+                        <div id="res-good-1-mbti" class="friend-card-mbti">--</div>
+                    </div>
+                    <div class="friend-card-item">
+                        <div id="res-good-2-name" class="friend-card-name">--</div>
+                        <div id="res-good-2-mbti" class="friend-card-mbti">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-recommend">
+                <div class="product-title">🎁 專屬命定禮盒推薦</div>
+                <p id="res-product-name" style="font-weight: 700; margin-bottom: 4px; font-size: 0.95rem;">--</p>
+                <p id="res-product-desc" style="font-size: 0.8rem; color: #666;">--</p>
+                <a id="res-buy-link" href="#" target="_blank" class="buy-btn">🛒 立即選購命定禮盒</a>
+            </div>
+        </div>
+
+        <button class="btn" style="background: var(--main-green); margin-bottom: 20px;" onclick="restartQuiz()">🔄 再測一次</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
