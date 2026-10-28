@@ -1,4 +1,4 @@
-﻿const questions = [
+const questions = [
     { q: "終於迎來週末假期，你理想中的充電方式是？", a: [ { text: "約朋友去打卡咖啡廳、市集狂歡聚會", type: "E" }, { text: "窩在家看劇、追漫或獨自享受安靜的下午茶", type: "I" } ] },
     { q: "去一家沒去過的高評價甜點店，你會怎麼點餐？", a: [ { text: "選招牌經典款或店長推薦，最穩不踩雷", type: "S" }, { text: "點名稱神秘、擺盤特別的季節限定創新款", type: "N" } ] },
     { q: "朋友遇到煩心事找你傾訴，你的第一反應是？", a: [ { text: "幫他理性分析原因，提供具體的解決建議", type: "T" }, { text: "先抱抱他、安撫情緒，給予真誠的同理與關懷", type: "F" } ] },
@@ -44,15 +44,20 @@ function startQuiz() {
 
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const target = document.getElementById(id);
+    if (target) {
+        target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 }
 
 function renderQuestion() {
     const q = questions[currentQ];
     document.getElementById('question-num').innerText = `QUESTION ${String(currentQ + 1).padStart(2, '0')}`;
     document.getElementById('question-text').innerText = q.q;
-    document.getElementById('progress-fill').style.width = `${((currentQ) / questions.length) * 100}%`;
+    
+    const progressPercent = Math.round((currentQ / questions.length) * 100);
+    document.getElementById('progress-fill').style.width = `${progressPercent}%`;
 
     const container = document.getElementById('options-container');
     container.innerHTML = '';
@@ -66,11 +71,14 @@ function renderQuestion() {
 }
 
 function handleAnswer(type) {
-    scores[type]++;
+    if (scores.hasOwnProperty(type)) {
+        scores[type]++;
+    }
     currentQ++;
     if (currentQ < questions.length) {
         renderQuestion();
     } else {
+        document.getElementById('progress-fill').style.width = '100%';
         showResult();
     }
 }
@@ -98,7 +106,9 @@ function showResult() {
 
     document.getElementById('res-product-name').innerText = p.prod;
     document.getElementById('res-product-desc').innerText = p.prodDesc;
-    document.getElementById('res-buy-link').href = p.link;
+    
+    const buyBtn = document.getElementById('res-buy-link');
+    if (buyBtn) buyBtn.href = p.link;
 
     renderSvgIcon();
     showScreen('result-screen');
@@ -106,38 +116,54 @@ function showResult() {
 }
 
 function renderSvgIcon() {
-    document.getElementById('res-svg').innerHTML = `
-        <svg viewBox="0 0 100 100" width="80" height="80">
-            <rect x="20" y="25" width="60" height="50" rx="10" fill="#E65C40" stroke="#5C3D2E" stroke-width="3"/>
-            <rect x="25" y="20" width="50" height="10" rx="4" fill="#F6D55C" stroke="#5C3D2E" stroke-width="2"/>
-            <circle cx="38" cy="45" r="3" fill="#FFF"/>
-            <circle cx="62" cy="45" r="3" fill="#FFF"/>
-            <path d="M 43 55 Q 50 62 57 55" stroke="#FFF" stroke-width="2" fill="none"/>
-        </svg>
-    `;
+    const iconContainer = document.getElementById('res-svg');
+    if (iconContainer) {
+        iconContainer.innerHTML = `
+            <svg viewBox="0 0 100 100" width="80" height="80">
+                <rect x="20" y="25" width="60" height="50" rx="10" fill="#E65C40" stroke="#5C3D2E" stroke-width="3"/>
+                <rect x="25" y="20" width="50" height="10" rx="4" fill="#F6D55C" stroke="#5C3D2E" stroke-width="2"/>
+                <circle cx="38" cy="45" r="3" fill="#FFF"/>
+                <circle cx="62" cy="45" r="3" fill="#FFF"/>
+                <path d="M 43 55 Q 50 62 57 55" stroke="#FFF" stroke-width="2" fill="none"/>
+            </svg>
+        `;
+    }
 }
 
 function renderChart() {
-    const ctx = document.getElementById('radarChart').getContext('2d');
-    if (window.myRadarChart) window.myRadarChart.destroy();
+    const canvas = document.getElementById('radarChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    if (window.myRadarChart) {
+        window.myRadarChart.destroy();
+    }
+
+    const calcRate = (val) => Math.round((val / 3) * 100);
 
     window.myRadarChart = new Chart(ctx, {
         type: 'radar',
         data: {
-            labels: ['社交(E)', '務實(S)', '邏輯(T)', '規劃(J)', '理想(N)', '情感(F)'],
+            labels: ['社交 (E)', '直覺 (N)', '情感 (F)', '彈性 (P)', '內向 (I)', '實務 (S)', '邏輯 (T)', '嚴謹 (J)'],
             datasets: [{
+                label: '性格特質分析',
                 data: [
-                    Math.max(scores.E * 25, 20),
-                    Math.max(scores.S * 25, 20),
-                    Math.max(scores.T * 25, 20),
-                    Math.max(scores.J * 25, 20),
-                    Math.max(scores.N * 25, 20),
-                    Math.max(scores.F * 25, 20)
+                    calcRate(scores.E),
+                    calcRate(scores.N),
+                    calcRate(scores.F),
+                    calcRate(scores.P),
+                    calcRate(scores.I),
+                    calcRate(scores.S),
+                    calcRate(scores.T),
+                    calcRate(scores.J)
                 ],
-                backgroundColor: 'rgba(230, 92, 64, 0.2)',
+                backgroundColor: 'rgba(230, 92, 64, 0.25)',
                 borderColor: '#E65C40',
                 borderWidth: 2,
-                pointBackgroundColor: '#5C3D2E'
+                pointBackgroundColor: '#5C3D2E',
+                pointBorderColor: '#FFF',
+                pointHoverBackgroundColor: '#FFF',
+                pointHoverBorderColor: '#E65C40'
             }]
         },
         options: {
@@ -145,15 +171,20 @@ function renderChart() {
             maintainAspectRatio: false,
             scales: {
                 r: {
-                    angleLines: { color: '#5C3D2E' },
+                    angleLines: { color: '#E8D5C4' },
                     grid: { color: '#E8D5C4' },
-                    pointLabels: { font: { size: 10, weight: 'bold' }, color: '#5C3D2E' },
+                    pointLabels: { 
+                        font: { size: 11, weight: 'bold' }, 
+                        color: '#5C3D2E' 
+                    },
                     ticks: { display: false },
                     suggestedMin: 0,
                     suggestedMax: 100
                 }
             },
-            plugins: { legend: { display: false } }
+            plugins: { 
+                legend: { display: false } 
+            }
         }
     });
 }
